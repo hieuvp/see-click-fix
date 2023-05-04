@@ -1,2 +1,7 @@
-# see-click-fix
-SeeClickFix
+# SeeClickFix
+
+## Technologies
+
+- NiFi
+- Elasticsearch
+- Kibana

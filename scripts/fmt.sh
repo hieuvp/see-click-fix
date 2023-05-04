@@ -15,4 +15,5 @@ set -eoux pipefail
 (
   cd terraform
   terraform fmt
+  prettier --write ./*.yaml
 )

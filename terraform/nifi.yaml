@@ -1,7 +1,19 @@
+replicaCount: 3
+
 zookeeper:
   replicaCount: 1
 
 auth:
   singleUser:
     username: admin
-    password: p@ssword
+
+persistence:
+  enabled: true
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"

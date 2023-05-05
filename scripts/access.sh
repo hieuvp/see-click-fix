@@ -9,35 +9,37 @@ set -eou pipefail
 
 export KUBECONFIG="terraform/kube/config"
 
+set -x
+
+# shellcheck disable=SC2046
+kill -9 $(lsof -t -c kubectl) || true
+sleep 2s
+
+set +x
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Kibana
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 KIBANA_PORT=5601
-
-kill -9 "$(lsof -t -i:$KIBANA_PORT)" || true
-sleep 2s
-kubectl port-forward --namespace elastic service/kibana $KIBANA_PORT:$KIBANA_PORT &> /dev/null &
-
 elasticsearch_username=$(cd terraform && terraform output -raw elasticsearch_username)
 elasticsearch_password=$(cd terraform && terraform output -raw elasticsearch_password)
+
+kubectl port-forward --namespace elastic service/kibana $KIBANA_PORT:$KIBANA_PORT &> /dev/null &
 
 echo
 echo "Kibana: http://127.0.0.1:${KIBANA_PORT}/"
 echo "${elasticsearch_username}/${elasticsearch_password}"
-echo
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # NiFi
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-NIFI_PORT=8443
+nifi_port=$(cd terraform && terraform output -raw nifi_port)
+nifi_password=$(cd terraform && terraform output -raw nifi_password)
 
-kill -9 "$(lsof -t -i:$NIFI_PORT)" || true
-sleep 2s
-kubectl port-forward --namespace nifi service/nifi $NIFI_PORT:$NIFI_PORT &> /dev/null &
+kubectl port-forward --namespace nifi service/nifi "${nifi_port}:${nifi_port}" &> /dev/null &
 
 echo
-echo "NiFi: https://127.0.0.1:${NIFI_PORT}/nifi/"
-echo "admin/p@ssword"
-echo
+echo "NiFi: https://127.0.0.1:${nifi_port}/nifi/"
+echo "admin/${nifi_password}"

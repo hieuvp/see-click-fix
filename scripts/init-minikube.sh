@@ -13,8 +13,8 @@ minikube stop
 minikube delete
 
 minikube start --driver=docker \
-  --memory=8000 \
-  --cpus=2 \
+  --memory=10000 \
+  --cpus=4 \
   --apiserver-ips="$REMOTE_HOST" \
   --listen-address="0.0.0.0"
 

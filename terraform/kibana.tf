@@ -2,16 +2,10 @@ locals {
   kibana_name = "kibana"
 }
 
-resource "kubernetes_namespace" "kibana" {
-  metadata {
-    name = "kibana"
-  }
-}
-
 resource "helm_release" "kibana" {
   name      = local.kibana_name
   chart     = "../helm-charts/kibana"
-  namespace = kubernetes_namespace.kibana.metadata.0.name
+  namespace = kubernetes_namespace.elastic.metadata.0.name
 
   set {
     name  = "nameOverride"
@@ -25,11 +19,15 @@ resource "helm_release" "kibana" {
 
   set {
     name  = "namespaceOverride"
-    value = kubernetes_namespace.kibana.metadata.0.name
+    value = kubernetes_namespace.elastic.metadata.0.name
   }
 
   values = [
     data.template_file.kibana.rendered,
+  ]
+
+  depends_on = [
+    helm_release.elasticsearch
   ]
 }
 

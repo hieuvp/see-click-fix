@@ -31,6 +31,8 @@ resource "helm_release" "nifi" {
   values = [
     data.template_file.nifi.rendered,
   ]
+
+  timeout = 600
 }
 
 data "template_file" "nifi" {

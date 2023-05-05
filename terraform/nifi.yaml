@@ -1,0 +1,7 @@
+zookeeper:
+  replicaCount: 1
+
+auth:
+  singleUser:
+    username: admin
+    password: p@ssword
